@@ -20,6 +20,7 @@
 
 import Foundation
 import PerfectLib
+import COpenSSL
 
 public extension FixedWidthInteger {
 	/// get a random number by the type
@@ -196,9 +197,9 @@ public extension Array where Element: Octal {
 		return newPtr.map { $0 }
 	}
 	/// Sign the Array data into an array of bytes using the indicated algorithm and key.
-	func sign(_ digest: Digest, key: Key) -> [UInt8]? {
+	func sign(_ digest: Digest, key: Key, engine: UnsafeMutablePointer<engine_st>? = nil) -> [UInt8]? {
 		let ptr = UnsafeRawBufferPointer(start: self, count: self.count)
-		guard let newPtr = ptr.sign(digest, key: key) else {
+		guard let newPtr = ptr.sign(digest, key: key, engine: engine) else {
 			return nil
 		}
 		defer { newPtr.deallocate() }
@@ -358,8 +359,8 @@ public extension UnsafeRawBufferPointer {
 	}
 	/// Sign the buffer using the indicated algorithm and key.
 	/// The return value must be deallocated by the caller.
-	func sign(_ digest: Digest, key: Key) -> UnsafeMutableRawBufferPointer? {
-		return digest.sign(self, privateKey: key)
+	func sign(_ digest: Digest, key: Key, engine: UnsafeMutablePointer<engine_st>? = nil) -> UnsafeMutableRawBufferPointer? {
+        return digest.sign(self, privateKey: key, engine: engine)
 	}
 	/// Verify the signature against the buffer.
 	/// Returns true if the signature is verified. Returns false otherwise.
