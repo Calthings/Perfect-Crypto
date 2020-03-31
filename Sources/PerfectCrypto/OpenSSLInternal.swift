@@ -297,14 +297,14 @@ extension Digest {
 		return Int(copenssl_EVP_MD_size(evp))
 	}
 	
-	func sign(_ data: UnsafeRawBufferPointer, privateKey key: Key) -> UnsafeMutableRawBufferPointer? {
+    func sign(_ data: UnsafeRawBufferPointer, privateKey key: Key, engine: UnsafeMutablePointer<engine_st>? = nil) -> UnsafeMutableRawBufferPointer? {
 		guard let ctx = copenssl_EVP_MD_CTX_create() else {
 			return nil
 		}
 		defer {
 			copenssl_EVP_MD_CTX_destroy(ctx)
 		}
-		guard 1 == EVP_DigestSignInit(ctx, nil, self.evp, nil, key.pkey) else {
+		guard 1 == EVP_DigestSignInit(ctx, nil, self.evp, engine, key.pkey) else {
 			return nil
 		}
 		guard 1 == EVP_DigestUpdate(ctx, data.baseAddress, data.count) else {
