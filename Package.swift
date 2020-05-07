@@ -20,11 +20,11 @@
 
 import PackageDescription
 
-//#if os(Linux)
-//	let cOpenSSLRepo = "https://github.com/Calthings/Perfect-COpenSSL-Linux.git"
-//#else
+#if os(Linux)
+	let cOpenSSLRepo = "https://github.com/Calthings/Perfect-COpenSSL-Linux.git"
+#else
 	let cOpenSSLRepo = "https://github.com/Calthings/Perfect-COpenSSL.git"
-//#endif
+#endif
 
 let package = Package(
     name: "PerfectCrypto",
