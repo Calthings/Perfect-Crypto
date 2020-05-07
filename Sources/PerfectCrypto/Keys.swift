@@ -71,8 +71,8 @@ public class PEMKey: Key {
 	init(kp: UnsafeMutablePointer<EVP_PKEY>?) {
 		super.init(kp)
 	}
-	public convenience init(pemPath: String) throws {
-		try self.init(source: try File(pemPath).readString())
+	public convenience init(pemPath: String, e: UnsafeMutablePointer<ENGINE>? = nil) throws {
+        try self.init(source: try File(pemPath).readString(), e: e)
 	}
 	
     public init(source original: String, e: UnsafeMutablePointer<ENGINE>? = nil) throws {
