@@ -75,7 +75,7 @@ public class PEMKey: Key {
 		try self.init(source: try File(pemPath).readString())
 	}
 	
-	public init(source original: String) throws {
+    public init(source original: String, e: UnsafeMutablePointer<ENGINE>? = nil) throws {
 		let source = PEMKey.cleanSource(original)
 		var kp: UnsafeMutablePointer<EVP_PKEY>? = nil
 		func tryOne(_ call: (MemoryIO) throws -> ()) throws -> Bool {
@@ -153,6 +153,10 @@ public class PEMKey: Key {
 						EVP_PKEY_free(kp)
 						throw KeyError("No public or private key could be read. Could not fetch EC private key.")
 					}
+                    
+                    if let e = e {
+                        kp?.pointee.engine = e
+                    }
 				}
 			}) {
 				super.init(kp)
